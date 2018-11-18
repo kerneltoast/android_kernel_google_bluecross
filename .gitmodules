@@ -1,0 +1,12 @@
+[submodule "drivers/staging/fw-api"]
+	path = drivers/staging/fw-api
+	url = ../android_kernel_google_bluecross_wlan-fw-api
+[submodule "drivers/staging/qcacld-3.0"]
+	path = drivers/staging/qcacld-3.0
+	url = ../android_kernel_google_bluecross_qcacld
+[submodule "drivers/staging/qca-wifi-host-cmn"]
+	path = drivers/staging/qca-wifi-host-cmn
+	url = ../android_kernel_google_bluecross_qca-wfi-host-cmn
+[submodule "techpack/audio"]
+	path = techpack/audio
+	url = ../android_kernel_google_bluecross_msm-extra
