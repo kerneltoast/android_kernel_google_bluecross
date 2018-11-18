@@ -39,6 +39,7 @@ config MNH_SIG
     tristate "MNH signing engine"
     depends on MNH_SM_HOST
     default "n"
+    select SYSTEM_DATA_VERIFICATION
     ---help---
        Adds support for authentication of MNH images
 
