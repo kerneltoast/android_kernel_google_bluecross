@@ -1904,7 +1904,7 @@ static void get_cx_all_data(void *device_data)
 					ReadData[j][i];
 				snprintf(buff, sizeof(buff),
 						"%d,", ReadData[j][i]);
-				strncat(all_strbuff, buff, sizeof(buff));
+				strncat(all_strbuff, buff, sizeof(all_strbuff));
 			}
 		}
 	}
