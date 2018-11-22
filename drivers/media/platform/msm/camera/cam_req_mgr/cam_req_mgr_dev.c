@@ -625,12 +625,6 @@ static int cam_req_mgr_probe(struct platform_device *pdev)
 		goto req_mgr_util_fail;
 	}
 
-	rc = cam_mem_mgr_init();
-	if (rc) {
-		CAM_ERR(CAM_CRM, "mem mgr init failed");
-		goto mem_mgr_init_fail;
-	}
-
 	rc = cam_req_mgr_core_device_init();
 	if (rc) {
 		CAM_ERR(CAM_CRM, "core device setup failed");
@@ -654,8 +648,6 @@ static int cam_req_mgr_probe(struct platform_device *pdev)
 	return rc;
 
 req_mgr_core_fail:
-	cam_mem_mgr_deinit();
-mem_mgr_init_fail:
 	cam_req_mgr_util_deinit();
 req_mgr_util_fail:
 	mutex_destroy(&g_dev.dev_lock);
