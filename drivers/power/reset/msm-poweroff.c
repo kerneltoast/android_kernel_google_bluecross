@@ -109,7 +109,7 @@ struct reset_attribute {
 module_param_call(download_mode, dload_set, param_get_int,
 			&download_mode, 0644);
 
-static bool warm_reset;
+static bool warm_reset = true;
 module_param(warm_reset, bool, 0644);
 MODULE_PARM_DESC(warm_reset, "Set 1 to override default cold-reset");
 
