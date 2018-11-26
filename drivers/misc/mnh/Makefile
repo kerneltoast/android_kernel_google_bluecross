@@ -10,4 +10,4 @@ obj-$(CONFIG_MNH_SIG) += mnh-crypto.o mnh-crypto-sysfs.o
 subdir-ccflags-y += \
 	-Wno-pointer-bool-conversion \
 
-
+CFLAGS_mnh-sm.o += -DCONFIG_DEBUG_FS
