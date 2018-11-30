@@ -25,6 +25,10 @@
 	qcom,dsi-display-active;
 };
 
+&mdss_dsi_phy0 {
+	qcom,panel-allow-phy-poweroff;
+};
+
 /* This overylay is required in order for acdbloader to load different files */
 &soc {
 	sound-tavil {

@@ -58,6 +58,8 @@
 		qcom,mdss-pan-physical-width-dimension  = <70>;
 		qcom,mdss-pan-physical-height-dimension = <144>;
 
+		qcom,ulps-enabled;
+
 		qcom,mdss-dsi-display-timings {
 			timing@0 {
 				qcom,mdss-dsi-panel-framerate = <60>;

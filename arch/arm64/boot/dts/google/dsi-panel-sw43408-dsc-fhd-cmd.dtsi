@@ -61,6 +61,8 @@
 		qcom,mdss-dsi-panel-blackness-level = <42>;
 		google,mdss-dsi-lp-brightness-compensation = <0>;
 
+		qcom,ulps-enabled;
+
 		qcom,mdss-dsi-display-timings {
 			timing@0 {
 				qcom,mdss-dsi-panel-framerate = <60>;
