@@ -529,9 +529,10 @@ int drm_dev_init(struct drm_device *dev,
 	mutex_init(&dev->master_mutex);
 
 	kthread_init_worker(&dev->bridge_enable_worker);
-	dev->bridge_enable_task = kthread_run(kthread_worker_fn,
-					      &dev->bridge_enable_worker,
-					      "drm_bridge_enable");
+	dev->bridge_enable_task =
+			kthread_run_perf_critical(kthread_worker_fn,
+						  &dev->bridge_enable_worker,
+						  "drm_bridge_enable");
 	if (IS_ERR(dev->bridge_enable_task)) {
 		ret = PTR_ERR(dev->bridge_enable_task);
 		DRM_ERROR("Cannot create bridge_enable kthread: %d\n", ret);
