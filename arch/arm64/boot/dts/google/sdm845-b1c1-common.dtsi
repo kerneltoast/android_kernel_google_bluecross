@@ -188,7 +188,7 @@
 		dev = "/dev/block/platform/soc/1d84000.ufshc/by-name/product";
 		type = "ext4";
 		mnt_flags = "ro";
-		fsmgr_flags = "wait,slotselect,avb";
+		fsmgr_flags = "wait,slotselect";
 	};
 };
 
