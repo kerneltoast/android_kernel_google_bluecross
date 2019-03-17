@@ -160,11 +160,40 @@ static const struct file_operations ipa3_nat_ipv6ct_fops = {
 	.mmap = ipa3_nat_ipv6ct_mmap
 };
 
+/**
+ * ipa3_allocate_nat_ipv6ct_tmp_memory() - Allocates the NAT\IPv6CT temp memory
+ */
+static struct ipa3_nat_ipv6ct_tmp_mem *ipa3_nat_ipv6ct_allocate_tmp_memory(void)
+{
+	struct ipa3_nat_ipv6ct_tmp_mem *tmp_mem;
+	gfp_t gfp_flags = GFP_KERNEL | __GFP_ZERO;
+
+	IPADBG("\n");
+
+	tmp_mem = kzalloc(sizeof(*tmp_mem), GFP_KERNEL);
+	if (tmp_mem == NULL)
+		return NULL;
+
+	tmp_mem->vaddr =
+		dma_alloc_coherent(ipa3_ctx->pdev, IPA_NAT_IPV6CT_TEMP_MEM_SIZE,
+			&tmp_mem->dma_handle, gfp_flags);
+	if (tmp_mem->vaddr == NULL)
+		goto bail_tmp_mem;
+
+	IPADBG("IPA successfully allocated temp memory\n");
+	return tmp_mem;
+
+bail_tmp_mem:
+	kfree(tmp_mem);
+	return NULL;
+}
+
 static int ipa3_nat_ipv6ct_init_device(
 	struct ipa3_nat_ipv6ct_common_mem *dev,
 	const char *name,
 	u32 phys_mem_size,
-	u32 smem_offset)
+	u32 smem_offset,
+	struct ipa3_nat_ipv6ct_tmp_mem *tmp_mem)
 {
 	int result;
 
@@ -255,15 +284,24 @@ static void ipa3_nat_ipv6ct_destroy_device(
  */
 int ipa3_nat_ipv6ct_init_devices(void)
 {
+	struct ipa3_nat_ipv6ct_tmp_mem *tmp_mem;
 	int result;
 
 	IPADBG("\n");
+
+	/*
+	 * Allocate NAT/IPv6CT temporary memory. The memory is never deleted,
+	 * because provided to HW once NAT or IPv6CT table is deleted.
+	 * NULL is a legal value
+	 */
+	tmp_mem = ipa3_nat_ipv6ct_allocate_tmp_memory();
 
 	if (ipa3_nat_ipv6ct_init_device(
 		&ipa3_ctx->nat_mem.dev,
 		IPA_NAT_DEV_NAME,
 		IPA_NAT_PHYS_MEM_SIZE,
-		IPA_NAT_PHYS_MEM_OFFSET)) {
+		IPA_NAT_PHYS_MEM_OFFSET,
+		tmp_mem)) {
 		IPAERR("unable to create nat device\n");
 		result = -ENODEV;
 		goto fail_init_nat_dev;
@@ -274,7 +312,8 @@ int ipa3_nat_ipv6ct_init_devices(void)
 			&ipa3_ctx->ipv6ct_mem.dev,
 			IPA_IPV6CT_DEV_NAME,
 			IPA_IPV6CT_PHYS_MEM_SIZE,
-			IPA_IPV6CT_PHYS_MEM_OFFSET)) {
+			IPA_IPV6CT_PHYS_MEM_OFFSET,
+			tmp_mem)) {
 		IPAERR("unable to create IPv6CT device\n");
 		result = -ENODEV;
 		goto fail_init_ipv6ct_dev;
@@ -285,6 +324,11 @@ int ipa3_nat_ipv6ct_init_devices(void)
 fail_init_ipv6ct_dev:
 	ipa3_nat_ipv6ct_destroy_device(&ipa3_ctx->nat_mem.dev);
 fail_init_nat_dev:
+	if (tmp_mem != NULL) {
+		dma_free_coherent(ipa3_ctx->pdev, IPA_NAT_IPV6CT_TEMP_MEM_SIZE,
+			tmp_mem->vaddr, tmp_mem->dma_handle);
+		kfree(tmp_mem);
+	}
 	return result;
 }
 
