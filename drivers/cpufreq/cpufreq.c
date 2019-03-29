@@ -2317,6 +2317,14 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
 	if (ret)
 		return ret;
 
+#ifdef CONFIG_ARCH_SDM845
+	/*
+	 * Limit gold cluster to 2553600 kHz since all higher frequencies run
+	 * slower on some devices, likely due to quality control issues.
+	 */
+	cpufreq_verify_within_limits(new_policy, new_policy->min, 2553600);
+#endif
+
 	/* notification of the new policy */
 	blocking_notifier_call_chain(&cpufreq_policy_notifier_list,
 			CPUFREQ_NOTIFY, new_policy);
