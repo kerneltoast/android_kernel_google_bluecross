@@ -263,7 +263,7 @@ static int dsi_backlight_update_status(struct backlight_device *bd)
 		if (panel->vr_mode && (bl_lvl < bl->bl_vr_min_safe_level))
 			bl_lvl = bl->bl_vr_min_safe_level;
 
-		pr_info("req:%d bl:%d state:0x%x\n",
+		pr_debug("req:%d bl:%d state:0x%x\n",
 			bd->props.brightness, bl_lvl, bd->props.state);
 
 		rc = bl->update_bl(bl, bl_lvl);
